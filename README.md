@@ -2,27 +2,21 @@
 
 A new flutter plugin project.
 
-[## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.io/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.io/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-](
-### flutter_drag_scale
 ```
 可缩放可拖拽的功能，可实现图片或者其他widget的缩放已经拖拽
 并支持双击放大的功能
 ```
 wechat ：674668211 加微信进flutter微信群
+
 掘金： https://juejin.im/user/581206302f301e005c60cd2f
+
 简书：https://www.jianshu.com/u/4a5dce56807b
+
 csdn：https://me.csdn.net/liu__520
+
 github : https://github.com/LiuC520/
+
 
 我们知道官方提供了双击缩放，但是不支持拖拽的功能，我们要实现向百度地图那样可以缩放又可以拖拽的功能，官方的方法就不支持了。
 下面先演示下功能：
@@ -71,4 +65,4 @@ class MyApp extends StatelessWidget {
   }
 }
 
-```)
+```
