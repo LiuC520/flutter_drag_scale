@@ -18,7 +18,10 @@ dev_dependencies:
     sdk: flutter
 
   flutter_drag_scale:
-    path: ../
+    git: https://github.com/LiuC520/flutter_drag_scale.git
+
+  # flutter_drag_scale:
+  #   path: ../
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

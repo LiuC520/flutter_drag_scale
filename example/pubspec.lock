@@ -44,9 +44,11 @@ packages:
   flutter_drag_scale:
     dependency: "direct dev"
     description:
-      path: ".."
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "33d4dfa904728e277f67d029767b833330655333"
+      url: "https://github.com/LiuC520/flutter_drag_scale.git"
+    source: git
     version: "0.0.1"
   flutter_test:
     dependency: "direct dev"
