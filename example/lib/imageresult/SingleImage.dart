@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui' as flutterUi;
 import 'dart:ui';
 import 'package:flutter_drag_scale/flutter_drag_scale.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'ImageUtil.dart';
 import 'DrawWidget.dart';
 import 'OldImage.dart';
+import 'model.dart';
 
 class SingleImage extends StatelessWidget {
   @override
@@ -26,16 +28,33 @@ class PreviewImageWidget extends StatefulWidget {
 class SingleImageState extends State<PreviewImageWidget> {
   final GlobalKey pipCaptureKey = new GlobalKey();
 
-  List<Offset> datoudingOffset = [Offset(60, 60)]; //大头钉的位置
-
+  List<Model> datas = new List();
+  List<Offset> offsets = [
+    Offset(10, 60),
+    Offset(40, 60),
+    Offset(80, 60),
+    Offset(120, 60),
+    Offset(160, 60),
+    Offset(200, 60),
+    Offset(240, 60),
+    Offset(280, 60),
+  ];
   int currentIndex = 0;
   flutterUi.Image _bigImage;
   flutterUi.Image _datoudingImage;
-  Offset offset = Offset(0, 0);
   String datouding = "images/datouding.png";
+  String datouding_blue = "images/datouding_blue.png";
   @override
   void initState() {
     super.initState();
+    for (int i = 0; i < offsets.length; i++) {
+      Model model = new Model(
+          index: i,
+          isRed: i % 2 == 0 ? true : false,
+          img: i % 2 == 0 ? datouding : datouding_blue,
+          offset: offsets[i]);
+      datas.add(model);
+    }
     reLoad();
   }
 
@@ -46,17 +65,17 @@ class SingleImageState extends State<PreviewImageWidget> {
   }
 
   void reLoad() {
-    print(this.currentIndex);
     String oldImageUrl = "images/lctest.jpg";
     Future.wait([
       OldImage.getInstance().loadImage(oldImageUrl),
-      ImageUtil.drawImage(oldImageUrl, this.datouding, datoudingOffset[0]),
     ]).then((results) {
-      _datoudingImage = results[1];
       _bigImage = results[0];
-      if (mounted) {
-        setState(() {});
-      }
+      Future.wait([ImageUtil.drawImage(oldImageUrl, datas)]).then((results) {
+        _datoudingImage = results[0];
+        if (mounted) {
+          setState(() {});
+        }
+      });
     });
   }
 
@@ -72,11 +91,24 @@ class SingleImageState extends State<PreviewImageWidget> {
           color: Colors.blue,
           textColor: Colors.white,
           onPressed: () {
-            this.setState(() {
-              datouding = this.datouding == "images/datouding_blue.png"
-                  ? "images/datouding.png"
-                  : "images/datouding_blue.png";
-            });
+            Model m1 = datas[0];
+            Model m2 = datas[6];
+            Model model0 = Model(
+                index: m1.index,
+                isRed: !m1.isRed,
+                img: m1.img == "images/datouding_blue.png"
+                    ? "images/datouding.png"
+                    : "images/datouding_blue.png",
+                offset: m1.offset);
+            datas[0] = model0;
+            Model model3 = Model(
+                index: m2.index,
+                isRed: !m2.isRed,
+                img: m2.img == "images/datouding_blue.png"
+                    ? "images/datouding.png"
+                    : "images/datouding_blue.png",
+                offset: m2.offset);
+            datas[6] = model3;
 
             reLoad();
           },

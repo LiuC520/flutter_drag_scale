@@ -25,8 +25,6 @@ class DrawState extends State<DrawWidget> {
 
   @override
   Widget build(BuildContext context) {
-    int width = widget._oldImage == null ? 0 : widget._oldImage.width;
-    int height = widget._oldImage == null ? 0 : widget._oldImage.height;
     return new Container(
         width: _width,
         height: _width,

@@ -5,11 +5,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'OldImage.dart';
 import 'package:flutter/services.dart';
+
+import 'model.dart';
 
 class ImageUtil {
   static double scale = 1;
+  static Size size = Size(0, 0);
   static AssetBundle getAssetBundle() => (rootBundle != null)
       ? rootBundle
       : new NetworkAssetBundle(new Uri.directory(Uri.base.origin));
@@ -46,6 +48,7 @@ class ImageUtil {
     scale = width / newWidth;
     paint.filterQuality = FilterQuality.high;
     paint.isAntiAlias = true;
+    size = Size(newWidth, newHeight);
     canvas.drawImageRect(image, Rect.fromLTWH(0, 0, width, height),
         Rect.fromLTWH(0, 0, newWidth, newHeight), paint);
 
@@ -53,31 +56,38 @@ class ImageUtil {
   }
 
   static Future<flutterUi.Image> drawImage(
-      String oldImageUrl, String datoudingImage, Offset offset) {
+      String oldImageUrl, List<Model> models) {
     Completer<flutterUi.Image> completer = new Completer<flutterUi.Image>();
-    Future.wait([
-      load(datoudingImage),
-      OldImage.getInstance().loadImage(oldImageUrl),
-    ]).then((result) {
+    List<Future<flutterUi.Image>> imgs = new List();
+    for (int i = 0; i < models.length; i++) {
+      imgs.add(load(models[i].img));
+    }
+    print(imgs.length);
+
+    Future.wait(imgs).then((result) {
+      print("shadingl ${result.length}");
       Paint paint = new Paint();
       PictureRecorder recorder = PictureRecorder();
       Canvas canvas = Canvas(recorder);
 
-      int width = result[1].width;
-      int height = result[1].height;
+      int width = size.width.toInt();
+      int height = size.height.toInt();
+      print(size);
       paint.filterQuality = FilterQuality.high;
       paint.isAntiAlias = true;
+      double dtdWidth = result[1].width / scale;
+      double dtdHeight = result[1].height / scale;
+      for (int i = 0; i < models.length; i++) {
+        print(models[i].offset);
+        canvas.drawImageRect(
+            result[i],
+            Rect.fromLTWH(
+                0, 0, result[i].width.toDouble(), result[i].height.toDouble()),
+            Rect.fromLTWH(
+                models[i].offset.dx, models[i].offset.dy, dtdWidth, dtdHeight),
+            paint);
+      }
 
-      canvas.drawImage(result[1], Offset(0, 0), paint);
-      double dtdWidth = result[0].width / scale;
-      double dtdHeight = result[0].height / scale;
-
-      canvas.drawImageRect(
-          result[0],
-          Rect.fromLTWH(
-              0, 0, result[0].width.toDouble(), result[0].height.toDouble()),
-          Rect.fromLTWH(offset.dx, offset.dy, dtdWidth, dtdHeight),
-          paint);
       recorder.endRecording().toImage(width, height).then((image) {
         completer.complete(image);
       });
